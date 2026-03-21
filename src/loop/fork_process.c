@@ -4,23 +4,32 @@
 ** File description:
 ** Fork, exec and child status handling
 */
-#include "my.h"
+#include <errno.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+#include "loop.h"
+#include "utils.h"
 
 static int print_signal(int sig, int core)
 {
     if (write(2, strsignal(sig), my_strlen(strsignal(sig))) == -1)
-        return 84;
+        return ERROR;
     if (core && write(2, " (core dumped)", 14) == -1)
-        return 84;
+        return ERROR;
     if (write(2, "\n", 1) == -1)
-        return 84;
+        return ERROR;
     return 128 + sig;
 }
 
 static int check_status(int status)
 {
-    int sig = 0;
-    int exit_code = 0;
+    int sig = SUCCESS;
+    int exit_code = SUCCESS;
 
     if (WIFEXITED(status)) {
         exit_code = WEXITSTATUS(status);
@@ -29,7 +38,7 @@ static int check_status(int status)
         sig = WTERMSIG(status);
         return print_signal(sig, WCOREDUMP(status));
     }
-    return 0;
+    return SUCCESS;
 }
 
 static char *build_full_path(char *dir, char *command)
@@ -62,11 +71,11 @@ static int exec_path_candidate(char *path, char **array, char **env)
     char *full_path = build_full_path(path, array[0]);
 
     if (!full_path)
-        return 0;
+        return ERROR;
     execve(full_path, array, env);
     free(full_path);
     if (errno == ENOENT || errno == ENOTDIR)
-        return 0;
+        return ERROR;
     return 126;
 }
 
@@ -122,7 +131,7 @@ static int execute_child(char **array, char **env)
     return try_exec_with_path(array, env);
 }
 
-int manage_process(char **array, char **env, pid_t pid)
+static int manage_process(char **array, char **env, pid_t pid)
 {
     int status = 0;
     int child_status = 0;
@@ -132,7 +141,7 @@ int manage_process(char **array, char **env, pid_t pid)
         exit(child_status);
     }
     if (waitpid(pid, &status, 0) == -1) {
-        return 84;
+        return ERROR;
     }
     return check_status(status);
 }
@@ -143,6 +152,6 @@ int fork_process(char **array, char **env)
 
     pid = fork();
     if (pid == -1)
-        return 84;
+        return ERROR;
     return manage_process(array, env, pid);
 }

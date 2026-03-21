@@ -4,24 +4,26 @@
 ** File description:
 ** Program entry point and shell lifecycle
 */
-#include "my.h"
+#include <stddef.h>
+
+#include "shell.h"
+#include "loop.h"
 
 int main(int argc, char **argv, char **env)
 {
-    int value = 0;
-    int input = 0;
-    size_t bufsize = 0;
-    char **my_env = NULL;
+    shell_t *shell = NULL;
+    int status = SUCCESS;
 
     if (argc != 1 || !argv)
-        return 84;
-    my_env = dup_env(env);
-    if (!my_env)
-        return 84;
-    my_env = init_shell_env(my_env);
-    value = loop_terminal(&my_env, value, input, bufsize);
-    for (int i = 0; my_env[i]; i++)
-        free(my_env[i]);
-    free(my_env);
-    return 0;
+        return ERROR;
+    shell = shell_create();
+    if (!shell)
+        return ERROR;
+    if (shell_init(shell, env) == ERROR)
+        return ERROR;
+    status = shell_run(shell);
+    shell_destroy(shell);
+    if (status == ERROR)
+        return ERROR;
+    return SUCCESS;
 }

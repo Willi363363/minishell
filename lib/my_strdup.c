@@ -5,7 +5,9 @@
 ** Duplicates a string
 */
 
-#include "my.h"
+#include <stdlib.h>
+
+#include "utils.h"
 
 char *my_strdup(char *str)
 {

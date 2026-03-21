@@ -4,7 +4,7 @@
 ** File description:
 ** Prints a string to stdout
 */
-#include "my.h"
+#include "utils.h"
 
 int my_putstr(char const *str)
 {

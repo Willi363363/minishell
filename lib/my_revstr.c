@@ -4,7 +4,7 @@
 ** File description:
 ** Concatenates two strings
 */
-#include "my.h"
+#include "utils.h"
 
 char *my_revstr(char *str)
 {

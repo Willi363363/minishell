@@ -4,8 +4,9 @@
 ** File description:
 ** Compares two strings
 */
+#include "utils.h"
 
-int my_strcmp(char *s1, char *s2)
+int my_strcmp(char const *s1, char const *s2)
 {
     int i = 0;
 

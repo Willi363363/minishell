@@ -4,7 +4,10 @@
 ** File description:
 ** Concatenates two strings
 */
-#include "my.h"
+#include <stddef.h>
+#include <stdlib.h>
+
+#include "utils.h"
 
 static char *fill_and_rev(char *str, int value, int index, int neg)
 {

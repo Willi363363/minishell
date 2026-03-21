@@ -5,14 +5,16 @@
 ** str_to_word_array
 */
 
-#include "my.h"
+#include <stdlib.h>
+
+#include "utils.h"
 
 static int is_delimiter(char c, char delim)
 {
     return (c == delim || (delim == ' ' && c == '\t'));
 }
 
-static int count_words(char *str, char delim)
+static int count_words(char const *str, char delim)
 {
     int count = 0;
     int in_word = 0;
@@ -39,7 +41,7 @@ static int update_word_count(int in_word, int count)
     return (count);
 }
 
-static int find_word_start(char *str, int word_nb, char delim)
+static int find_word_start(char const *str, int word_nb, char delim)
 {
     int count = 0;
     int in_word = 0;
@@ -57,7 +59,7 @@ static int find_word_start(char *str, int word_nb, char delim)
     return (0);
 }
 
-static int get_word_length(char *str, int start, char delim)
+static int get_word_length(char const *str, int start, char delim)
 {
     int len = 0;
 
@@ -66,7 +68,7 @@ static int get_word_length(char *str, int start, char delim)
     return (len);
 }
 
-static char *extract_word(char *str, int word_nb, char delim)
+static char *extract_word(char const *str, int word_nb, char delim)
 {
     int start = find_word_start(str, word_nb, delim);
     int len = get_word_length(str, start, delim);
@@ -91,7 +93,7 @@ static void free_array(char **array, int count)
     free(array);
 }
 
-char **str_to_word_array(char *str, char delim)
+char **str_to_word_array(char const *str, char delim)
 {
     int nb = count_words(str, delim);
     char **res = NULL;

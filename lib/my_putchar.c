@@ -5,7 +5,9 @@
 ** Prints a character to stdout
 */
 
-#include "my.h"
+#include <unistd.h>
+
+#include "utils.h"
 
 int my_putchar(char c)
 {

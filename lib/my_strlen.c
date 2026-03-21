@@ -4,6 +4,8 @@
 ** File description:
 ** Returns the length of a string
 */
+#include "utils.h"
+
 int my_strlen(char const *str)
 {
     int size = 0;

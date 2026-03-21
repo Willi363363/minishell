@@ -4,7 +4,7 @@
 ** File description:
 ** Prints an integer to stdout
 */
-#include "my.h"
+#include "utils.h"
 
 int my_put_nbr(int nb)
 {
