@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 #include "env.h"
-#include "utils.h"
+#include "my_utils.h"
 
 static char *create_env_entry(char const *key, char const *value)
 {

@@ -4,7 +4,7 @@
 ** File description:
 ** Copies a string into another
 */
-#include "utils.h"
+#include "my_utils.h"
 
 char *my_strcpy(char *dest, char const *src)
 {

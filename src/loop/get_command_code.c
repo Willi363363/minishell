@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "loop.h"
-#include "utils.h"
+#include "my_utils.h"
 
 int get_command_code(command_t *cmd, int code)
 {

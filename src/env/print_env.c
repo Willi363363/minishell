@@ -8,7 +8,7 @@
 #include <stddef.h>
 
 #include "env.h"
-#include "utils.h"
+#include "my_utils.h"
 
 int print_env(shell_t *shell)
 {

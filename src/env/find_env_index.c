@@ -8,7 +8,7 @@
 #include <stddef.h>
 
 #include "env.h"
-#include "utils.h"
+#include "my_utils.h"
 
 int find_env_index(char **env, char const *key)
 {

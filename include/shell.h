@@ -9,7 +9,7 @@
     #define SHELL_H_
     #include <stddef.h>
 
-    #include "utils.h"
+    #include "my_utils.h"
 
 typedef struct shell_s {
     char **env;

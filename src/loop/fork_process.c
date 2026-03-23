@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 #include "loop.h"
-#include "utils.h"
+#include "my_utils.h"
 
 static int print_signal(int sig, int core)
 {

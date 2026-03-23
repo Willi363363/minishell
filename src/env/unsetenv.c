@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "env.h"
-#include "utils.h"
+#include "my_utils.h"
 
 static void copy_without_key(char **dest, char **src, int count, int index)
 {

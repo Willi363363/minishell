@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #include "loop.h"
-#include "utils.h"
+#include "my_utils.h"
 
 static int show_prompt(shell_t *shell)
 {
