@@ -12,6 +12,8 @@
 
 #include "loop.h"
 #include "my_utils.h"
+#include "lexer.h"
+#include "parser.h"
 
 static int show_prompt(shell_t *shell)
 {
@@ -41,28 +43,74 @@ static int handle_read_failure(void)
     return ERROR;
 }
 
-static int handle_input(shell_t *shell, ssize_t input)
+static int process_read_result(ssize_t input)
 {
     int failure = SUCCESS;
 
+    if (input != -1)
+        return 0;
+    failure = handle_read_failure();
+    if (failure == 1)
+        return 1;
+    if (failure == ERROR)
+        return ERROR;
+    return 2;
+}
+
+static int inspect_line(shell_t *shell, ssize_t input)
+{
     if (!shell)
         return ERROR;
-    if (input == -1) {
-        failure = handle_read_failure();
-        if (failure == 1)
-            return 1;
-        if (failure == ERROR)
-            return ERROR;
-        return 2;
-    }
     trim_newline(shell->line, input);
     if (!shell->line || shell->line[0] == '\0')
         return 1;
     if (my_strcmp(shell->line, "exit") == 0)
         return 2;
-    if (my_exec(shell, shell->line) == ERROR)
+    return 0;
+}
+
+static int cleanup_and_return(lexer_t *lexer, ast_t *ast, int code)
+{
+    if (ast)
+        ast_destroy(ast);
+    if (lexer)
+        lexer_destroy(lexer);
+    return code;
+}
+
+static int build_and_run_ast(shell_t *shell)
+{
+    lexer_t *lexer = lexer_create();
+    ast_t *ast = NULL;
+    int status = 0;
+
+    if (!lexer)
         return ERROR;
-    return SUCCESS;
+    if (lexer_tokenize(lexer, shell->line) == ERROR)
+        return cleanup_and_return(lexer, NULL, ERROR);
+    ast = parse_tokens(lexer->tokens);
+    if (!ast)
+        return cleanup_and_return(lexer, NULL, ERROR);
+    status = exec_ast(shell, ast);
+    if (status == ERROR)
+        return cleanup_and_return(lexer, ast, ERROR);
+    shell->last_status = status;
+    return cleanup_and_return(lexer, ast, SUCCESS);
+}
+
+static int handle_input(shell_t *shell, ssize_t input)
+{
+    int status = 0;
+
+    if (!shell)
+        return ERROR;
+    status = process_read_result(input);
+    if (status)
+        return status;
+    status = inspect_line(shell, input);
+    if (status)
+        return status;
+    return build_and_run_ast(shell);
 }
 
 int shell_run(shell_t *shell)

@@ -23,7 +23,5 @@ int main(int argc, char **argv, char **env)
         return ERROR;
     status = shell_run(shell);
     shell_destroy(shell);
-    if (status == ERROR)
-        return ERROR;
-    return SUCCESS;
+    return status;
 }

@@ -96,3 +96,29 @@ int my_exec(shell_t *shell, char const *buffer)
         shell->last_status = value;
     return value;
 }
+
+static size_t argv_len(char **argv)
+{
+    size_t i = 0;
+
+    while (argv && argv[i])
+        i++;
+    return i;
+}
+
+int exec_command(shell_t *shell, char **argv)
+{
+    command_t cmd;
+    int value = SUCCESS;
+
+    if (!shell || !argv || !argv[0])
+        return ERROR;
+    cmd.argv = argv;
+    cmd.argc = argv_len(argv);
+    if (cmd.argc == 0)
+        return shell->last_status;
+    value = dispatch_command(shell, &cmd);
+    if (value != ERROR)
+        shell->last_status = value;
+    return value;
+}
