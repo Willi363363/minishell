@@ -16,5 +16,6 @@ lexer_t *lexer_create(void)
         return NULL;
     lexer->tokens = NULL;
     lexer->token_count = 0;
+    lexer->next = NULL;
     return lexer;
 }

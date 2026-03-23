@@ -7,16 +7,25 @@
 
 #include "lexer.h"
 #include <stdlib.h>
+#include "token.h"
 
 void lexer_destroy(lexer_t *lexer)
 {
+    token_t *current = NULL;
+    token_t *next = NULL;
+
     if (!lexer)
         return;
-    for (size_t i = 0; i < lexer->token_count; i++) {
-        if (lexer->tokens[i])
-            token_destroy(lexer->tokens[i]);
+    current = lexer->tokens;
+    while (current) {
+        next = current->next;
+        token_destroy(current);
+        current = next;
     }
-    if (lexer->tokens)
-        free(lexer->tokens);
+    lexer->tokens = NULL;
+    if (lexer->next) {
+        lexer_destroy(lexer->next);
+        lexer->next = NULL;
+    }
     free(lexer);
 }

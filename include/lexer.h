@@ -10,9 +10,12 @@
     #include <stddef.h>
     #include "token.h"
 
+typedef struct lexer_s lexer_t;
+
 typedef struct lexer_s {
-    token_t **tokens;
+    token_t *tokens;
     size_t token_count;
+    lexer_t *next;
 } lexer_t;
 
 lexer_t *lexer_create(void);
