@@ -7,6 +7,7 @@
 
 #ifndef LOOP_H_
     #define LOOP_H_
+    #include <stddef.h>
 
     #include "shell.h"
 
