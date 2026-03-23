@@ -8,6 +8,8 @@
 #ifndef TOKEN_H_
     #define TOKEN_H_
 
+    #include <stddef.h>
+
 typedef enum token_type_e {
     TOK_ARGS,
     TOK_SEMICOLON,
@@ -22,9 +24,10 @@ typedef enum token_type_e {
 typedef struct token_s {
     token_type_t type;
     char *value;
+    struct token_s *next;
 } token_t;
 
-token_t *token_create(token_type_t type, const char *value);
+token_t *token_create(token_type_t type, const char *value, size_t len);
 void token_destroy(token_t *token);
 
 #endif /* !TOKEN_H_ */

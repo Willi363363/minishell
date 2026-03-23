@@ -7,9 +7,24 @@
 
 #include "token.h"
 #include <stdlib.h>
-#include <string.h>
 
-token_t *token_create(token_type_t type, const char *value)
+static char *dup_slice(const char *value, size_t len)
+{
+    char *out = NULL;
+    size_t i = 0;
+
+    out = malloc((len + 1) * sizeof(char));
+    if (!out)
+        return NULL;
+    while (i < len) {
+        out[i] = value[i];
+        i++;
+    }
+    out[len] = '\0';
+    return out;
+}
+
+token_t *token_create(token_type_t type, const char *value, size_t len)
 {
     token_t *token = NULL;
 
@@ -19,6 +34,11 @@ token_t *token_create(token_type_t type, const char *value)
     if (!token)
         return NULL;
     token->type = type;
-    token->value = value ? strdup(value) : NULL;
+    token->value = dup_slice(value, len);
+    token->next = NULL;
+    if (!token->value) {
+        free(token);
+        return NULL;
+    }
     return token;
 }
