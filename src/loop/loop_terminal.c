@@ -34,12 +34,10 @@ static void trim_newline(char *buffer, ssize_t input)
 
 static int handle_read_failure(void)
 {
-    if (feof(stdin))
-        return SUCCESS;
-    if (errno == EINTR) {
-        clearerr(stdin);
+    if (errno == EINTR)
         return 1;
-    }
+    if (errno == 0)
+        return SUCCESS;
     return ERROR;
 }
 
@@ -113,20 +111,27 @@ static int handle_input(shell_t *shell, ssize_t input)
     return build_and_run_ast(shell);
 }
 
-int shell_run(shell_t *shell)
+static int process_iteration(shell_t *shell)
 {
     ssize_t input = 0;
     int prompt_status = 0;
+
+    prompt_status = show_prompt(shell);
+    if (prompt_status == ERROR)
+        return ERROR;
+    errno = 0;
+    input = getline(&shell->line, &shell->line_cap, stdin);
+    return handle_input(shell, input);
+}
+
+int shell_run(shell_t *shell)
+{
     int status = SUCCESS;
 
     if (!shell)
         return ERROR;
     while (1) {
-        prompt_status = show_prompt(shell);
-        if (prompt_status == ERROR)
-            return ERROR;
-        input = getline(&shell->line, &shell->line_cap, stdin);
-        status = handle_input(shell, input);
+        status = process_iteration(shell);
         if (status == ERROR)
             return ERROR;
         if (status == 1)
